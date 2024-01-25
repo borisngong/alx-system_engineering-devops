@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Using while loop to siplay "Best School",
+# on the 9th iteration, displays "Hi" before "Best School"
+
+aggregate=0
+
+while [ $aggregate -lt 10 ]
+do
+  if [ $aggregate -eq 9 ]
+  then
+    echo "Hi"
+  fi
+  echo "Best School"
+  (( aggregate++ ))
+done
