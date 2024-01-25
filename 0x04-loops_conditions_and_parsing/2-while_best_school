@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#Using a while loop to display Best School 10 times
+
+aggregate=0
+
+while [ $aggregate -lt 10 ]
+do
+	echo "Best School"
+	(( aggregate++ ))
+done
