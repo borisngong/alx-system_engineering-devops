@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Using Until display Best School 10 times
+
+aggregate=0
+
+until [ $aggregate -eq 10 ]
+do
+  echo "Best School"
+  (( aggregate++ ))
+done
+
