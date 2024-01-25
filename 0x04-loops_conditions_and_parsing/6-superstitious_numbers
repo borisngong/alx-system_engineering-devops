@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Using thw while loopisplays numbers from 1 to 20 in addition to:
+# Using while loop to dispaly numbers 20 times:
 #   "bad luck from China" for the 4th iteration
 #   "bad luck from Japan" for the 9th iteration
 #   "bad luck from Italy" for the 17th loop iteration
 
-count=1
+aggregate=1
 
-while [ $count -le 20 ]
+while [ $aggregate -le 20 ]
 do
-  echo "$count"
-  case $count in
+  echo "$aggregate"
+  case $aggregate in
     "4") echo "bad luck from China";;
     "9") echo "bad luck from Japan";;
     "17") echo "bad luck from Italy";;
   esac
-  (( count++ ))
+  (( aggregate++ ))
 done
