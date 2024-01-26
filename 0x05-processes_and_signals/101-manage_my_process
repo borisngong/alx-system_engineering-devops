@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Initializes the manage _script 
+
+# Get the path to the directory containing this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Define path to manage_my_process script
+MANAGE_SCRIPT="$SCRIPT_DIR/manage_my_process"
+
+# Function to start the process
+start() {
+    $MANAGE_SCRIPT start
+}
+
+# Function to stop the process
+stop() {
+    $MANAGE_SCRIPT stop
+}
+
+# Function to restart the process
+restart() {
+    $MANAGE_SCRIPT restart
+}
+
+# Main function
+main() {
+    case "$1" in
+        start)
+            start
+            ;;
+        stop)
+            stop
+            ;;
+        restart)
+            restart
+            ;;
+        *)
+            echo "Usage: $0 {start|stop|restart}"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
