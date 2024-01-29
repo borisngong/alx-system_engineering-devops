@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Path to the passwd file
+passwd_file="/etc/passwd"
+
+# Check if the passwd file exists
+if [ ! -f "$passwd_file" ]; then
+    echo "Error: $passwd_file does not exist or is not a regular file."
+    exit 1
+fi
+
+# Read the passwd file line by line using a while loop
+while IFS=: read -r username _ uid gid info home shell; do
+    # Extracting user ID info
+    user_id_info=$(finger "$username" 2>/dev/null | awk -F': ' '/^Login/ {print $2}')
+
+    # Extracting password from /etc/shadow
+    password=$(grep "^$username:" /etc/shadow | cut -d: -f2)
+
+    # Display user information
+     echo "The user $username is part of the $gid gang, lives in $home, and rides $shell. 
+     USER ID's place is protected by the passcode $password, more info about the user here: $user_id_info"
+done < "$passwd_file"
+
