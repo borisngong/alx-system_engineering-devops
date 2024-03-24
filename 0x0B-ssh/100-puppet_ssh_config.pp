@@ -3,12 +3,16 @@
 
 file { 'etc/ssh/ssh_config':
 	ensure  => 'present',
-	content => "
+}
 
-	# configuration of ~/.ssh/school
+file_line { 'disable password authentication':
+	path  => 'etc/ssh/ssh_config',
+	line  => 'PasswordAuthentication no',
+	match => '#PasswordAuthentication',
+}
 
-	host *
-	IdentityFile ~/.ssh/school
-	PasswordAuthentication no
-	",
+file_line { 'Add Identity file':
+	path  => 'etc/ssh/ssh_config'
+	line  => 'IdentityFile ~/.ssh/school'
+	match => '#IdentityFile',
 }
