@@ -10,6 +10,4 @@ boro_add_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/
 
 sudo sed -i "s/server_name _;/$boro_add_string/" /etc/nginx/sites-enabled/default
 
-sudo nginx -t
-
 sudo service nginx restart
