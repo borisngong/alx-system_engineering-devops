@@ -14,9 +14,9 @@ sudo sed -i "s/server_name _;/$boro_add_string\n\t/" /etc/nginx/sites-enabled/de
 
 echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
 
-boro_add_error-string=z"listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\troot \/var/www/html;\n\tinternal;\n\t}"
+boro_add_error-string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\troot \/var/www/html;\n\tinternal;\n\t}"
 
-sudo sed -i "s/listen 80 default_server;/$boro_add_error/" /etc/nginxs/sites-enabled/default
+sudo sed -i "s/listen 80 default_server;/$boro_add_error_string/" /etc/nginxs/sites-enabled/default
 
 # check if configuration was carried succesfully
 
