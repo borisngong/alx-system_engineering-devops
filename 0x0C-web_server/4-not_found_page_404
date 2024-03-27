@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
 # Script to configure Nginx server so that /redirect_me is redirecting to another page
 
-# Install Nginx
-sudo apt update
-sudo apt install -y nginx
+# Update package list
+sudo apt-get update
 
-# Create the custom 404 page
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Create index.html file with "Hello World!"
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+
+# Add rewrite rule for /redirect_me
+boro_add_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/borisngong permanent;"
+sudo sed -i "s/server_name _;/$boro_add_string\n\t/" /etc/nginx/sites-enabled/default
+
+# Create 404.html file with "Ceci n'est pas une page"
+
 echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
 
-# Configure Nginx to use the custom 404 page
-sudo tee /etc/nginx/sites-available/default > /dev/null <<EOT
-server {
-    listen 80 default_server;
-    root /var/www/html;
-    index index.html index.htm;
+# Add error page configuration
+boro_add_errorz_string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\troot \/var\/www\/html;\n\tinternal;\n\t}"
 
-    error_page 404 /404.html;
+sudo sed -i "s/listen 80 default_server;/$boro_add_errorz_string/" /etc/nginx/sites-enabled/default
 
-    location = /404.html {
-        internal;
-    }
-}
-EOT
+# Test Nginx configuration
 
-# Test the Nginx configuration
 sudo nginx -t
 
-# Restart Nginx to apply the changes
+# Restart Nginx service
+
 sudo service nginx restart
