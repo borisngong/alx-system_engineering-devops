@@ -2,13 +2,13 @@
 # Script to configure Nginx server so that /redirect_me is redirecting to another page
 
 sudo apt-get update
-sudo at-get install -y nginx
+sudo apt-get install -y nginx
 
-echo "Hello World!" | sudo tee /var/www/html/index.html
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
 
 boro_add_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/borisngong permanent;"
 
-sudo sed -i "s/server_name _;/$boro_add_string/" /etc/nginx/sites-enabled/default
+sudo sed -i "s/server_name _;/$boro_add_string\n\t/" /etc/nginx/sites-enabled/default
 
 sudo nginx -t
 
