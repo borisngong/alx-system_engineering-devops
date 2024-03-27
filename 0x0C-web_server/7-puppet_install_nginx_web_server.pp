@@ -1,4 +1,4 @@
-# Puppet Manifest to install and configure Nginx web server with 301 redirect
+# Puppet Manifest to install and configure Nginx web server with 301 redirections
 
 # Install Nginx package
 package { 'nginx':
@@ -7,15 +7,15 @@ package { 'nginx':
 
 # Ensure Nginx service is enabled and running
 service { 'nginx':
-  ensure => 'running',
-  enable => true,
+  ensure  => 'running',
+  enable  => true,
   require => Package['nginx'],
 }
 
 # Configure Nginx server block
 file { '/etc/nginx/sites-available/default':
   ensure  => file,
-  content => "
+  content => @("END")
     server {
         listen 80 default_server;
         listen [::]:80 default_server;
@@ -24,7 +24,7 @@ file { '/etc/nginx/sites-available/default':
         index index.html;
 
         location / {
-            try_files $uri $uri/ =404;
+            try_files ${uri} ${uri}/ =404;
         }
 
         location /redirect_me {
@@ -37,7 +37,7 @@ file { '/etc/nginx/sites-available/default':
             internal;
         }
     }
-  ",
+  END
   require => Package['nginx'],
   notify  => Service['nginx'],
 }
@@ -55,4 +55,5 @@ exec { 'nginx-config-test':
   refreshonly => true,
   notify      => Service['nginx'],
 }
+
 
