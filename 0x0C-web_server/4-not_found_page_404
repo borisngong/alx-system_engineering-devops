@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# Update package list
+sudo apt-get update
+
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Create index.html file with "Hello World!"
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+
+# Add rewrite rule for /redirect_me
+boro_add_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/borisngong permanent;"
+sudo sed -i "s/server_name _;/$boro_add_string\n\t/" /etc/nginx/sites-enabled/default
+
+# Create 404.html file with "Ceci n'est pas une page"
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
+
+# Add error page configuration
+boro_add_errorz_string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\troot \/var\/www\/html;\n\tinternal;\n\t}"
+sudo sed -i "s/listen 80 default_server;/$boro_add_errorz_string/" /etc/nginx/sites-enabled/default
+
+# Test Nginx configuration
+sudo nginx -t
+
+# Restart Nginx service
+sudo service nginx restart
+
