@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Script to configure web-02 to be identical to web-01 adding the http header response
+
+# update apps and install nginx
+
+sudo apt-get update
+sudo apt-get install -y nginx
+
+# Create display page
+
+echo "Hello World!" | sudo tee /var/www/html/index.html
+
+# Cretae redirect_me for performing redirections
+
+boro_string="server_name _;$'\n\t'rewrite ^/redirect_me http://github.com/borisngong permanent;"
+
+sudo sed -i "s#server_name _;#$boro_string#" /etc/nginx/sites-enabled/default
+
+# Create custom error 404
+
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+
+# Creatin the http response header
+
+sudo sed -i "/server_name _;/a add_header X-Served-By $HOSTNAME" /etc/nginx/sites-enabled/default
+
+Verify succesful configuration
+
+sudo nginx -t
+
+# Restart nginx to affect changes
+
+sudo service nginx restart
