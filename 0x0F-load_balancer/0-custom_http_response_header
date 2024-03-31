@@ -12,7 +12,7 @@ echo "Hello World!" | sudo tee /var/www/html/index.html
 
 # Cretae redirect_me for performing redirections
 
-boro_string="server_name _;$'\n\t'rewrite ^/redirect_me http://github.com/borisngong permanent;"
+boro_string="server_name _;$'\n\t' rewrite ^/redirect_me http://github.com/borisngong permanent;"
 
 sudo sed -i "s#server_name _;#$boro_string#" /etc/nginx/sites-enabled/default
 
@@ -22,7 +22,7 @@ echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
 
 # Creatin the http response header
 
-sudo sed -i "/server_name _;/a add_header X-Served-By $HOSTNAME" /etc/nginx/sites-enabled/default
+sudo sed -i "/server_name _;/a add_header X-Served-By \"$HOSTNAME\";" /etc/nginx/sites-enabled/default
 
 Verify succesful configuration
 
