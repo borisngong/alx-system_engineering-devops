@@ -11,4 +11,4 @@ sudo nginx -t
 sudo service nginx restart
 
 # Terminate the first Nginx process ID
-sudo kill $(pgrep nginx | head -n 1)
+sudo kill "$(pgrep 'nginx' | head -1)"
