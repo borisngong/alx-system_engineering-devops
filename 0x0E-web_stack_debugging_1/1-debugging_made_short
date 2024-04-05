@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 # Script to configure Nginx server to listen on port 80
-
-# Create symbolic link for Nginx configuration
 ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-
-# Check if Nginx configuration is okay
-sudo nginx -t
-
-# Restart Nginx service
 sudo service nginx restart
-
-# Terminate the first Nginx process ID
 sudo kill "$(pgrep 'nginx' | head -1)"
