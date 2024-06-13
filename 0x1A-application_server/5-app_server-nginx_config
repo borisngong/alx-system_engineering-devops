@@ -3,36 +3,24 @@ server {
     listen [::]:80 default_server;
 
     root /var/www/html;
-    index index.html index.htm;
-
+    index index.html index.htm index.nginx-debian.html;
     server_name _;
 
-    # Proxy pass to various backends
-    location /airbnb-onepage/ {
-        proxy_pass http://127.0.0.1:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+    add_header X-Served-By $hostname;
+
+    # Serve static files
+    location /static/ {
+        alias /home/ubuntu/AirBnB_clone_v4/web_dynamic/static/;
+        try_files $uri $uri/ =404;
     }
 
-    location ~ ^/airbnb-dynamic/number_odd_or_even/(\d+)$ {
-        rewrite ^/airbnb-dynamic/number_odd_or_even/(\d+)$ /number_odd_or_even/$1 break;
-        proxy_pass http://127.0.0.1:5001;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+    # Serve content from /data/web_static/current/
+    location /hbnb_static/ {
+        alias /data/web_static/current/;
+        try_files $uri $uri/ =404;
     }
 
-    location /api/ {
-        proxy_pass http://127.0.0.1:5002;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
+    # Proxy requests to the root to Gunicorn instance running on port 5003
     location / {
         proxy_pass http://127.0.0.1:5003;
         proxy_set_header Host $host;
@@ -41,12 +29,42 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    location /static/ {
-        alias /home/ubuntu/AirBnB_clone_v4/web_dynamic/static/;
+    # Proxy requests for /airbnb-onepage
+    location /airbnb-onepage/ {
+        proxy_pass http://0.0.0.0:5000/airbnb-onepage;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
+    # Proxy requests for /airbnb-dynamic/number_odd_or_even/
+    location ~ ^/airbnb-dynamic/number_odd_or_even/([0-9]+)$ {
+        proxy_pass http://0.0.0.0:5001/number_odd_or_even/$1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Proxy requests for /api/
+    location /api/ {
+        proxy_pass http://0.0.0.0:5002;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Redirect requests matching "redirect_me" to GitHub
+    if ($request_filename ~ redirect_me) {
+        rewrite ^ https://github.com/borisngong permanent;
+    }
+
+    # Error page for 404 errors
     error_page 404 /error_404.html;
     location = /error_404.html {
         internal;
     }
 }
+
