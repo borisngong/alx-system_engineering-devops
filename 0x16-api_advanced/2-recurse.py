@@ -9,7 +9,7 @@ def recurse(subreddit, hot_list=[], after="", count=0):
     """Responsible for returning all hot posts on a given subreddit"""
     url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
     users = {
-        "User-Agent": "boro_didier"
+        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by boro)"
     }
     parameters = {
         "after": after,
