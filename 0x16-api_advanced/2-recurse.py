@@ -6,9 +6,22 @@ import requests
 
 
 def recurse(subreddit, hot_list=[], after="", count=0):
-    """Responsible for returning all hot posts on a given subreddit"""
+    """
+    Responsible for returning all hot posts on a given subreddit
+
+    Args:
+        subreddit (str): The subreddit to fetch hot posts from
+        hot_list (list): The list of hot post titles
+        (default is an empty list)
+        after (str): The after parameter for pagination
+        (default is an empty string)
+        count (int): The count of posts fetched so far (default is 0)
+
+    Returns:
+        list: A list of hot post titles
+    """
     url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
-    users = {
+    headers = {
         "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by boro)"
     }
     parameters = {
@@ -16,9 +29,12 @@ def recurse(subreddit, hot_list=[], after="", count=0):
         "count": count,
         "limit": 100
     }
-    response = requests.get(url, headers=users, params=parameters,
-                            allow_redirects=False)
-    if response.status_code == 404:
+    try:
+        response = requests.get(url, headers=headers,
+                                params=parameters, allow_redirects=False)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching data: {e}")
         return None
 
     results = response.json().get("data")
