@@ -10,9 +10,9 @@ def top_ten(subreddit):
     10 hot posts listed for a given subreddit. If not a valid
     subreddit, print None.
     '''
-    reddit_app_info = {'User-Agent': 'my_reddit_app:v1.0.0'}
+    headers = {'User-Agent': 'redquery'}
     url = f'https://www.reddit.com/r/{subreddit}/hot/.json?limit=10'
-    response = requests.get(url, headers=reddit_app_info,
+    response = requests.get(url, headers=headers,
                             allow_redirects=False)
 
     if response.status_code == 200:
