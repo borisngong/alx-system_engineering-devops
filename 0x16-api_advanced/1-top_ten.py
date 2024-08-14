@@ -6,11 +6,11 @@ import requests
 
 def top_ten(subreddit):
     '''
-    Responsible for querying the Reddit API and prints the titles
-    of the first 10 hot posts listed for a given subreddit,
-    if no subreddit print None
+    Queries the Reddit API and prints the titles of the top
+    10 hot posts listed for a given subreddit. If not a valid
+    subreddit, print None.
     '''
-    reddit_app_info = {'User-Agent': 'Boro'}
+    reddit_app_info = {'User-Agent': 'my_reddit_app:v1.0.0'}
     url = f'https://www.reddit.com/r/{subreddit}/hot/.json?limit=10'
     response = requests.get(url, headers=reddit_app_info,
                             allow_redirects=False)
