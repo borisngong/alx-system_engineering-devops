@@ -1,0 +1,44 @@
+server {
+    listen 80;
+    listen [::]:80 default_server;
+    add_header X-Served-By $hostname;
+    root   /etc/nginx/html;
+    index  index.html index .htm;
+
+    # Redirect requests to /redirect_me to my github page
+    location /redirect_me {
+        return 301 https://github.com/borisngong;
+    }
+
+    # Set the root directory to /var/www/html
+    root /var/www/html;
+
+    # Set the server name to _
+    server_name _;
+
+    # Proxy requests to /airbnb-onepage to the process listening
+    # on port 5000
+    location /airbnb-onepage {
+        proxy_pass http://0.0.0.0:5000/airbnb-onepage;
+    }
+    
+    # Proxy requests to /airbnb-dynamic/number_odd_or_even/<number>
+    # to the process listening on port 5001
+    # The number is captured using a regular expression and passed
+    # as a parameter to the proxy_pass directive
+    location ~ ^/airbnb-dynamic/number_odd_or_even/([0-9]+)$ {
+        proxy_pass http://0.0.0.0:5001/number_odd_or_even/$1;
+    }
+
+    # Serve files from the /data/web_static/current/ directory
+    location /hbnb_static {
+        alias /data/web_static/current/;
+    }
+
+    # First, try to serve the request as a file
+    # If that doesn't work, try to serve it as a directory
+    # If that still doesn't work, return a 404 error
+    location /{
+        try_files $uri $uri/ =404;
+     }
+}
