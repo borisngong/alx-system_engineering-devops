@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn application server
+After=network.target
+
+[Service]
+User=vagrant
+Group=vagrant
+WorkingDirectory=/home/vagrant/AirBnB_clone_v4
+ExecStart=/home/vagrant/AirBnB_clone_v4/bin/gunicorn --bind 0.0.0.0:5003 --workers 3 web_dynamic.2-hbnb:app
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=gunicorn
+
+[Install]
+WantedBy=multi-user.target
