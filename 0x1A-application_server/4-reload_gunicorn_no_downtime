@@ -1,15 +1,23 @@
 #!/bin/bash
 
-# Get the master process ID of Gunicorn
-MASTER_PID=$(ps aux | grep 'gunicorn' | grep 'master' | awk '{print $2}')
+echo "Reloading Gunicorn gracefully..."
 
-if [ -z "$MASTER_PID" ]; then
-    echo "Gunicorn master process not found."
+# Find the Gunicorn master process ID
+master_pid=$(ps auxf | grep 'gunicorn' | grep 'master' | grep -v grep | awk '{print $2}')
+
+# Check if the master PID was found
+if [ -z "$master_pid" ]; then
     exit 1
 fi
 
-# Send SIGHUP signal to the master process to reload Gunicorn
-kill -HUP $MASTER_PID
+# Send the SIGHUP signal to the Gunicorn master process for graceful reload
+kill -HUP $master_pid
 
-echo "Gunicorn master process with PID $MASTER_PID reloaded."
+# Check if the signal was sent successfully
+if [ $? -eq 0 ]; then
+    echo "Gunicorn master process with PID $master_pid has been reloaded gracefully."
+else
+    echo "Failed to reload Gunicorn. Please check the process and try again."
+    exit 1
+fi
 
